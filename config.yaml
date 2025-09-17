@@ -1,0 +1,115 @@
+meta:
+  version: '2025.09.12-advanced-fixed'
+  author: 'automated-generator'
+  notes: 'Prefilled estimates and sensible defaults. Update as new data arrives.'
+model:
+  nuclear_alpha: 1.3e-7
+  climate_to_food_elasticity: 0.12
+  famine_trigger_fpi: 180.0
+  conflict_base_hazard: 0.001
+  conflict_hazard_scale: 0.002
+  volatility:
+    nuclear_pct_sd_yr: 0.03
+    fpi_pct_sd_yr: 0.08
+    conflict_score_sd_yr: 0.5
+    temp_trend_sd_decade: 0.05
+  correlations:
+    vars: [nuclear_growth, fpi_pct, conflict_score, temp_trend]
+    matrix:
+      - [1.0, 0.15, 0.35, 0.05]
+      - [0.15, 1.0, 0.25, 0.15]
+      - [0.35, 0.25, 1.0, 0.10]
+      - [0.05, 0.15, 0.10, 1.0]
+  triggers:
+    famine_fpi_jump:
+      threshold_pct: 0.15
+      multiplier: 5.0
+    nuclear_deploy_spike:
+      threshold_pct: 0.1
+      multiplier: 3.0
+    temp_2c:
+      threshold_abs: 2.0
+      longterm_multiplier: 2.5
+data:
+  sipri_local_csv: sipri_history.csv
+  fao_fpi_history_csv: fao_fpi_history.csv
+  gistemp_history_csv: gistemp_history.csv
+  wars_history_csv: wars_history.csv
+  gdelt_sample_query: conflict
+  use_html_scrape_for_fao: true
+  fao_fpi_page: https://www.fao.org/worldfoodsituation/foodpricesindex/en/
+  fao_default_fpi: 130.1
+  temp_default_anomaly_1951_1980: 1.28
+  temp_default_trend_decade: 0.32
+  sipri_snapshot:
+    - Country: Russia
+      Deployed: 5459
+      Reserve: 1000
+      Retired: 1000
+      Total: 7459
+    - Country: United States
+      Deployed: 5177
+      Reserve: 1000
+      Retired: 1000
+      Total: 7177
+    - Country: China
+      Deployed: 600
+      Reserve: 0
+      Retired: 0
+      Total: 600
+    - Country: France
+      Deployed: 290
+      Reserve: 0
+      Retired: 0
+      Total: 290
+    - Country: United Kingdom
+      Deployed: 225
+      Reserve: 0
+      Retired: 0
+      Total: 225
+    - Country: Pakistan
+      Deployed: 170
+      Reserve: 0
+      Retired: 0
+      Total: 170
+    - Country: India
+      Deployed: 180
+      Reserve: 0
+      Retired: 0
+      Total: 180
+    - Country: Israel
+      Deployed: 90
+      Reserve: 0
+      Retired: 0
+      Total: 90
+    - Country: North Korea
+      Deployed: 50
+      Reserve: 0
+      Retired: 0
+      Total: 50
+  sipri_defaults:
+    total_inventory: 12241
+    stockpiles_potential_use: 9614
+    deployed_with_forces: 3912
+run:
+  years_horizon: 5
+  monte_carlo_runs: 20000
+  mc_chunk: 2000
+  save_dir: results
+  seed: 42
+  sleep_between_runs_seconds: 3
+output:
+  save_parquet: true
+  save_csv: true
+scenario_thresholds:
+  nuclear:
+    1K: 10
+    1M: 1000
+    100M: 100000
+  famine_deaths:
+    1K: 1000
+    1M: 1000000
+    10M: 10000000
+  world_war_states:
+    regional: 3
+    global: 10
